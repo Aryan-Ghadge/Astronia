@@ -23,5 +23,10 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   minimize: () => ipcRenderer.send('window-minimize'),
   maximize: () => ipcRenderer.send('window-maximize'),
   close: () => ipcRenderer.send('window-close'),
+
+  // File System
+  readDir: (dirPath: string) => ipcRenderer.invoke('read-dir', dirPath),
+  readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath),
+  writeFile: (filePath: string, content: string) => ipcRenderer.invoke('write-file', { filePath, content }),
 })
 

@@ -9,5 +9,8 @@ interface Window {
     minimize: () => void
     maximize: () => void
     close: () => void
+    readDir: (dirPath: string) => Promise<any>
+    readFile: (filePath: string) => Promise<string>
+    writeFile: (filePath: string, content: string) => Promise<boolean>
   }
 }

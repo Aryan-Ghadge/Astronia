@@ -20,5 +20,9 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   // Window Controls
   minimize: () => electron.ipcRenderer.send("window-minimize"),
   maximize: () => electron.ipcRenderer.send("window-maximize"),
-  close: () => electron.ipcRenderer.send("window-close")
+  close: () => electron.ipcRenderer.send("window-close"),
+  // File System
+  readDir: (dirPath) => electron.ipcRenderer.invoke("read-dir", dirPath),
+  readFile: (filePath) => electron.ipcRenderer.invoke("read-file", filePath),
+  writeFile: (filePath, content) => electron.ipcRenderer.invoke("write-file", { filePath, content })
 });

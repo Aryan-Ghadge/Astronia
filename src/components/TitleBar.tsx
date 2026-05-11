@@ -1,6 +1,10 @@
 import React from 'react';
 
-const TitleBar: React.FC = () => {
+interface TitleBarProps {
+  currentFile?: string;
+}
+
+const TitleBar: React.FC<TitleBarProps> = ({ currentFile }) => {
   const handleMinimize = () => window.ipcRenderer.minimize();
   const handleMaximize = () => window.ipcRenderer.maximize();
   const handleClose = () => window.ipcRenderer.close();
@@ -13,10 +17,10 @@ const TitleBar: React.FC = () => {
           className="w-5 h-5 object-contain" 
           src="/logo.png" 
         />
-        <span className="text-white">ASTRONIA IDE</span>
+        <span className="text-white text-xs tracking-widest font-bold">ASTRONIA</span>
       </div>
-      <div className="text-[var(--text-muted)] text-xs font-medium tracking-wide pointer-events-none">
-        FirstProject — main.asx
+      <div className="text-[var(--text-muted)] text-xs font-medium tracking-wide pointer-events-none opacity-80">
+        {currentFile ? `FirstProject — ${currentFile}` : 'Astronia IDE'}
       </div>
       <div className="flex items-center space-x-4 text-[var(--text-muted)] no-drag" style={{ WebkitAppRegion: 'no-drag' } as any}>
         <button onClick={handleMinimize} className="hover:text-white p-1 transition-colors">
