@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-base: #0F111A;
+    --bg-panel: #1A1D27;
+    --bg-selection: rgba(81, 88, 123, 0.5);
+    --bg-input: #151822;
+    --border-color: #2D313F;
+    --text-main: #E5E9F0;
+    --text-muted: #8F9BB3;
+    --accent-color: #5EBCDB;
+    
+    /* Syntax Highlighting */
+    --syn-keyword: #82AAFF;
+    --syn-type: #82AAFF;
+    --syn-function: #82AAFF;
+    --syn-number: #F07178;
+    --syn-string: #C3E88D;
+    --syn-comment: #546E7A;
+    --syn-constant: #FFCB6B;
+
+    /* Shadcn Overrides to match theme */
+    --background: 230 30% 8%; /* #0F111A-ish */
+    --foreground: 230 25% 85%; /* #E5E9F0-ish */
+    --card: 230 30% 10%;
+    --card-foreground: 230 25% 90%;
+    --popover: 230 30% 8%;
+    --popover-foreground: 230 25% 85%;
+    --primary: 196 64% 62%; /* #5EBCDB */
+    --primary-foreground: 230 30% 5%;
+    --secondary: 230 20% 15%;
+    --secondary-foreground: 230 25% 90%;
+    --muted: 230 20% 15%;
+    --muted-foreground: 230 15% 65%;
+    --accent: 196 64% 62%;
+    --accent-foreground: 230 30% 5%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 230 20% 20%;
+    --input: 230 20% 15%;
+    --ring: 196 64% 62%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    @apply select-none text-sm;
+  }
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4A5063;
+}
+
+/* Utilities from design.html */
+.border-b-custom { border-bottom: 1px solid var(--border-color); }
+.border-r-custom { border-right: 1px solid var(--border-color); }
+.border-t-custom { border-top: 1px solid var(--border-color); }
+.border-l-custom { border-left: 1px solid var(--border-color); }
+.border-custom { border: 1px solid var(--border-color); }
+
+.hover-bg-custom:hover { background-color: var(--bg-selection); }
+.active-bg-custom { background-color: var(--bg-selection); }
+
+/* Syntax Colors */
+.syn-keyword { color: var(--syn-keyword); }
+.syn-type { color: var(--syn-type); }
+.syn-function { color: var(--syn-function); }
+.syn-number { color: var(--syn-number); }
+.syn-string { color: var(--syn-string); }
+.syn-comment { color: var(--syn-comment); }
+.syn-constant { color: var(--syn-constant); }
+
+.icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+.icon-lg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
