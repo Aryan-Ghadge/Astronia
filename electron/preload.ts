@@ -1,23 +1,11 @@
 import { contextBridge, ipcRenderer } from 'electron'
 
-// --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
-    const [channel, listener] = args
-    return ipcRenderer.on(channel, (event, ...args) => listener(event, ...args))
+  on: (channel: string, listener: (event: any, ...args: any[]) => void) => {
+    ipcRenderer.on(channel, (event, ...args) => listener(event, ...args))
   },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.off(channel, ...omit)
-  },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.send(channel, ...omit)
-  },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.invoke(channel, ...omit)
-  },
+  send: (channel: string, ...args: any[]) => ipcRenderer.send(channel, ...args),
+  invoke: (channel: string, ...args: any[]) => ipcRenderer.invoke(channel, ...args),
 
   // Window Controls
   minimize: () => ipcRenderer.send('window-minimize'),
@@ -28,5 +16,14 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   readDir: (dirPath: string) => ipcRenderer.invoke('read-dir', dirPath),
   readFile: (filePath: string) => ipcRenderer.invoke('read-file', filePath),
   writeFile: (filePath: string, content: string) => ipcRenderer.invoke('write-file', { filePath, content }),
-})
+  
+  // Dialogs
+  openFolderDialog: () => ipcRenderer.invoke('open-folder-dialog'),
+  saveFileDialog: (defaultPath?: string) => ipcRenderer.invoke('save-file-dialog', defaultPath),
 
+  // Terminal
+  terminalInput: (data: string) => ipcRenderer.send('terminal-input', data),
+  onTerminalOutput: (callback: (data: string) => void) => {
+    ipcRenderer.on('terminal-output', (_, data) => callback(data))
+  }
+})

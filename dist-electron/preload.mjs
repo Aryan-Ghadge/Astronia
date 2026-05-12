@@ -1,22 +1,11 @@
 "use strict";
 const electron = require("electron");
 electron.contextBridge.exposeInMainWorld("ipcRenderer", {
-  on(...args) {
-    const [channel, listener] = args;
-    return electron.ipcRenderer.on(channel, (event, ...args2) => listener(event, ...args2));
+  on: (channel, listener) => {
+    electron.ipcRenderer.on(channel, (event, ...args) => listener(event, ...args));
   },
-  off(...args) {
-    const [channel, ...omit] = args;
-    return electron.ipcRenderer.off(channel, ...omit);
-  },
-  send(...args) {
-    const [channel, ...omit] = args;
-    return electron.ipcRenderer.send(channel, ...omit);
-  },
-  invoke(...args) {
-    const [channel, ...omit] = args;
-    return electron.ipcRenderer.invoke(channel, ...omit);
-  },
+  send: (channel, ...args) => electron.ipcRenderer.send(channel, ...args),
+  invoke: (channel, ...args) => electron.ipcRenderer.invoke(channel, ...args),
   // Window Controls
   minimize: () => electron.ipcRenderer.send("window-minimize"),
   maximize: () => electron.ipcRenderer.send("window-maximize"),
@@ -24,5 +13,13 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   // File System
   readDir: (dirPath) => electron.ipcRenderer.invoke("read-dir", dirPath),
   readFile: (filePath) => electron.ipcRenderer.invoke("read-file", filePath),
-  writeFile: (filePath, content) => electron.ipcRenderer.invoke("write-file", { filePath, content })
+  writeFile: (filePath, content) => electron.ipcRenderer.invoke("write-file", { filePath, content }),
+  // Dialogs
+  openFolderDialog: () => electron.ipcRenderer.invoke("open-folder-dialog"),
+  saveFileDialog: (defaultPath) => electron.ipcRenderer.invoke("save-file-dialog", defaultPath),
+  // Terminal
+  terminalInput: (data) => electron.ipcRenderer.send("terminal-input", data),
+  onTerminalOutput: (callback) => {
+    electron.ipcRenderer.on("terminal-output", (_, data) => callback(data));
+  }
 });

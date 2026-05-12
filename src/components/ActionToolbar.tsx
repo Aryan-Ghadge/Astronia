@@ -1,54 +1,37 @@
 import React from 'react';
+import { Play, Upload, Square, Activity, Monitor, ChevronDown } from 'lucide-react';
+import { Button } from './ui/button';
+import { Separator } from './ui/separator';
 
 const ActionToolbar: React.FC = () => {
   return (
-    <div className="flex items-center justify-between px-3 py-2 border-b-custom bg-[#0F111A]">
-      <div className="flex items-center space-x-2">
-        <button className="p-1.5 border-custom border-[var(--accent-color)] text-[var(--accent-color)] rounded hover-bg-custom" title="Verify">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M20 6L9 17l-5-5"></path>
-          </svg>
-        </button>
-        <button className="p-1.5 border-custom border-[var(--accent-color)] text-[var(--accent-color)] rounded hover-bg-custom" title="Upload">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M12 19V5M5 12l7-7 7 7"></path>
-          </svg>
-        </button>
-        <button className="p-1.5 border-custom rounded hover-bg-custom text-[var(--text-muted)]" title="Stop">
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <rect height="12" width="12" x="6" y="6"></rect>
-          </svg>
-        </button>
-        <div className="flex items-center border-custom rounded py-1 bg-[var(--bg-input)] cursor-pointer hover-bg-custom px-4 min-w-[140px]">
-          <span className="mr-2">AstronicsCera</span>
-          <svg className="w-3 h-3 text-[var(--text-muted)]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M6 9l6 6 6-6"></path>
-          </svg>
+    <div className="flex items-center justify-between px-4 h-12 border-b border-[#1E232E] bg-[#0B0E14]">
+      <div className="flex items-center space-x-1">
+        <Button variant="ghost" size="icon" className="w-8 h-8 text-sky-400 hover:bg-sky-400/10" title="Verify (Ctrl+R)">
+          <Play className="w-4 h-4" />
+        </Button>
+        <Button variant="ghost" size="icon" className="w-8 h-8 text-sky-400 hover:bg-sky-400/10" title="Upload (Ctrl+U)">
+          <Upload className="w-4 h-4" />
+        </Button>
+        <Button variant="ghost" size="icon" className="w-8 h-8 text-slate-500 hover:text-red-400 hover:bg-red-400/10" title="Stop">
+          <Square className="w-3.5 h-3.5 fill-current" />
+        </Button>
+        
+        <Separator orientation="vertical" className="h-6 mx-2 bg-[#1E232E]" />
+        
+        <div className="flex items-center h-8 px-3 rounded-md bg-[#11141B] border border-[#1E232E] hover:border-sky-500/50 transition-all cursor-pointer group">
+          <span className="text-[12px] font-medium mr-3 group-hover:text-sky-400 transition-colors">Astronics Cera</span>
+          <ChevronDown className="w-3 h-3 text-slate-500 group-hover:text-sky-400 transition-colors" />
         </div>
       </div>
-      <div className="flex items-center space-x-2">
-        <button className="p-1.5 border-custom rounded hover-bg-custom text-[var(--text-muted)]" title="Serial Plotter">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M3 3v18h18M7 14l4-4 4 4 6-6"></path>
-          </svg>
-        </button>
-        <button className="p-1.5 border-custom rounded hover-bg-custom text-[var(--text-muted)]" title="Serial Monitor">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <rect height="14" rx="2" ry="2" width="20" x="2" y="3"></rect>
-            <path d="M8 21h8M12 17v4"></path>
-          </svg>
-        </button>
-        <button className="p-1.5 border-custom border-[var(--accent-color)] text-[var(--accent-color)] rounded hover-bg-custom" title="Play">
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-          </svg>
-        </button>
-        <button className="p-1.5 border-custom rounded hover-bg-custom text-[var(--text-muted)]" title="Next">
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <polygon points="5 4 15 12 5 20 5 4"></polygon>
-            <line stroke="currentColor" strokeWidth="2" x1="19" x2="19" y1="5" y2="19"></line>
-          </svg>
-        </button>
+      
+      <div className="flex items-center space-x-1">
+        <Button variant="ghost" size="icon" className="w-8 h-8 text-slate-500 hover:text-white" title="Serial Plotter">
+          <Activity className="w-4 h-4" />
+        </Button>
+        <Button variant="ghost" size="icon" className="w-8 h-8 text-slate-500 hover:text-white" title="Serial Monitor">
+          <Monitor className="w-4 h-4" />
+        </Button>
       </div>
     </div>
   );

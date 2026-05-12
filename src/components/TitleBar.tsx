@@ -1,4 +1,5 @@
 import React from 'react';
+import { Minus, Square, X } from 'lucide-react';
 
 interface TitleBarProps {
   currentFile?: string;
@@ -10,33 +11,40 @@ const TitleBar: React.FC<TitleBarProps> = ({ currentFile }) => {
   const handleClose = () => window.ipcRenderer.close();
 
   return (
-    <header className="flex items-center justify-between px-3 py-2 border-b-custom bg-[#0F111A] select-none drag-region" style={{ WebkitAppRegion: 'drag' } as any}>
-      <div className="flex items-center space-x-2 text-[var(--accent-color)] font-medium no-drag" style={{ WebkitAppRegion: 'no-drag' } as any}>
+    <header className="flex items-center justify-between px-3 h-10 border-b border-border bg-background select-none drag-region">
+      <div className="flex items-center space-x-3 no-drag">
         <img 
-          alt="Astronia IDE Logo" 
-          className="w-5 h-5 object-contain" 
+          alt="Astronia Logo" 
+          className="w-4 h-4 object-contain" 
           src="/logo.png" 
         />
-        <span className="text-white text-xs tracking-widest font-bold">ASTRONIA</span>
+        <span className="text-[11px] tracking-[0.2em] font-bold text-muted-foreground uppercase">Astronia IDE</span>
       </div>
-      <div className="text-[var(--text-muted)] text-xs font-medium tracking-wide pointer-events-none opacity-80">
-        {currentFile ? `FirstProject — ${currentFile}` : 'Astronia IDE'}
+      
+      <div className="text-[12px] font-medium text-muted-foreground/80 flex items-center space-x-2 pointer-events-none">
+        <span className="opacity-50">FirstProject</span>
+        <span className="opacity-30">—</span>
+        <span className="text-foreground/90">{currentFile || 'Welcome'}</span>
       </div>
-      <div className="flex items-center space-x-4 text-[var(--text-muted)] no-drag" style={{ WebkitAppRegion: 'no-drag' } as any}>
-        <button onClick={handleMinimize} className="hover:text-white p-1 transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M20 12H4"></path>
-          </svg>
+      
+      <div className="flex items-center no-drag h-full">
+        <button 
+          onClick={handleMinimize} 
+          className="h-full px-4 hover:bg-white/5 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <Minus className="w-3.5 h-3.5" />
         </button>
-        <button onClick={handleMaximize} className="hover:text-white p-1 transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <rect height="18" rx="2" ry="2" width="18" x="3" y="3"></rect>
-          </svg>
+        <button 
+          onClick={handleMaximize} 
+          className="h-full px-4 hover:bg-white/5 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <Square className="w-3 h-3" />
         </button>
-        <button onClick={handleClose} className="hover:text-red-500 p-1 transition-colors">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path d="M18 6L6 18M6 6l12 12"></path>
-          </svg>
+        <button 
+          onClick={handleClose} 
+          className="h-full px-4 hover:bg-destructive/80 text-muted-foreground hover:text-white transition-colors"
+        >
+          <X className="w-4 h-4" />
         </button>
       </div>
     </header>

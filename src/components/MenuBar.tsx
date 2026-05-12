@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface MenuOption {
   label: string;
   action?: () => void;
   shortcut?: string;
   divider?: boolean;
+  disabled?: boolean;
 }
 
 interface Menu {
@@ -12,7 +14,11 @@ interface Menu {
   options: MenuOption[];
 }
 
-const MenuBar: React.FC = () => {
+interface MenuBarProps {
+  onAction: (action: string) => void;
+}
+
+const MenuBar: React.FC<MenuBarProps> = ({ onAction }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -20,14 +26,19 @@ const MenuBar: React.FC = () => {
     {
       label: 'File',
       options: [
-        { label: 'New File', shortcut: 'Ctrl+N' },
-        { label: 'New Folder' },
+        { label: 'New File', shortcut: 'Ctrl+N', action: () => onAction('new-file') },
+        { label: 'New Folder', action: () => onAction('new-folder') },
+        { label: 'New Window', shortcut: 'Ctrl+Shift+N', disabled: true },
         { divider: true, label: '' },
-        { label: 'Open File...', shortcut: 'Ctrl+O' },
-        { label: 'Open Folder...' },
+        { label: 'Open File...', shortcut: 'Ctrl+O', action: () => onAction('open-file') },
+        { label: 'Open Folder...', shortcut: 'Ctrl+K Ctrl+O', action: () => onAction('open-folder') },
         { divider: true, label: '' },
-        { label: 'Save', shortcut: 'Ctrl+S' },
-        { label: 'Save As...', shortcut: 'Ctrl+Shift+S' },
+        { label: 'Save', shortcut: 'Ctrl+S', action: () => onAction('save') },
+        { label: 'Save As...', shortcut: 'Ctrl+Shift+S', action: () => onAction('save-as') },
+        { label: 'Save All', disabled: true },
+        { divider: true, label: '' },
+        { label: 'Auto Save', action: () => onAction('toggle-autosave') },
+        { label: 'Preferences', action: () => onAction('open-settings') },
         { divider: true, label: '' },
         { label: 'Exit', action: () => window.ipcRenderer.close() },
       ],
@@ -41,32 +52,84 @@ const MenuBar: React.FC = () => {
         { label: 'Cut', shortcut: 'Ctrl+X' },
         { label: 'Copy', shortcut: 'Ctrl+C' },
         { label: 'Paste', shortcut: 'Ctrl+V' },
+        { divider: true, label: '' },
+        { label: 'Find', shortcut: 'Ctrl+F' },
+        { label: 'Replace', shortcut: 'Ctrl+H' },
       ],
     },
     {
       label: 'View',
       options: [
-        { label: 'Explorer', shortcut: 'Ctrl+Shift+E' },
+        { label: 'Explorer', shortcut: 'Ctrl+Shift+E', action: () => onAction('toggle-sidebar') },
         { label: 'Search', shortcut: 'Ctrl+Shift+F' },
         { label: 'Extensions', shortcut: 'Ctrl+Shift+X' },
+        { label: 'Output', action: () => onAction('toggle-bottom-panel') },
+        { label: 'Terminal', shortcut: 'Ctrl+`', action: () => onAction('toggle-bottom-panel') },
         { divider: true, label: '' },
-        { label: 'Appearance' },
+        { label: 'Appearance', action: () => {} },
       ],
     },
     {
       label: 'Sketch',
       options: [
-        { label: 'Verify/Compile', shortcut: 'Ctrl+R' },
-        { label: 'Upload', shortcut: 'Ctrl+U' },
+        { label: 'Verify/Compile', shortcut: 'Ctrl+R', action: () => onAction('verify') },
+        { label: 'Upload', shortcut: 'Ctrl+U', action: () => onAction('upload') },
         { label: 'Upload Using Programmer', shortcut: 'Ctrl+Shift+U' },
         { divider: true, label: '' },
-        { label: 'Export Compiled Binary' },
+        { label: 'Export Compiled Binary', shortcut: 'Ctrl+Alt+S' },
+        { label: 'Show Sketch Folder', shortcut: 'Ctrl+K' },
+        { divider: true, label: '' },
+        { label: 'Include Library', action: () => {} },
+        { label: 'Add .File...', action: () => {} },
       ],
     },
-    { label: 'Tools', options: [{ label: 'Auto Format', shortcut: 'Ctrl+T' }, { label: 'Archive Sketch' }, { label: 'Serial Monitor', shortcut: 'Ctrl+Shift+M' }] },
-    { label: 'Run', options: [{ label: 'Start Debugging', shortcut: 'F5' }, { label: 'Run Without Debugging', shortcut: 'Ctrl+F5' }] },
-    { label: 'Terminal', options: [{ label: 'New Terminal', shortcut: 'Ctrl+Shift+`' }] },
-    { label: 'Help', options: [{ label: 'Welcome' }, { label: 'Documentation' }, { label: 'Check for Updates' }] },
+    {
+      label: 'Tools',
+      options: [
+        { label: 'Auto Format', shortcut: 'Ctrl+T' },
+        { label: 'Archive Sketch' },
+        { label: 'Fix Encoding & Reload' },
+        { label: 'Manage Libraries...', shortcut: 'Ctrl+Shift+I' },
+        { label: 'Serial Monitor', shortcut: 'Ctrl+Shift+M', action: () => onAction('show-serial') },
+        { label: 'Serial Plotter', shortcut: 'Ctrl+Shift+L', action: () => onAction('show-plotter') },
+        { divider: true, label: '' },
+        { label: 'Board: "Astronics Cera"', action: () => {} },
+        { label: 'Port: "COM3 (Astronics Cera)"', action: () => {} },
+        { label: 'Get Board Info', action: () => {} },
+        { divider: true, label: '' },
+        { label: 'Programmer', action: () => {} },
+        { label: 'Burn Bootloader', action: () => {} },
+      ],
+    },
+    {
+      label: 'Run',
+      options: [
+        { label: 'Start Debugging', shortcut: 'F5' },
+        { label: 'Run Without Debugging', shortcut: 'Ctrl+F5' },
+      ],
+    },
+    {
+      label: 'Terminal',
+      options: [
+        { label: 'New Terminal', shortcut: 'Ctrl+Shift+`' },
+        { label: 'Split Terminal', shortcut: 'Ctrl+Shift+5' },
+        { divider: true, label: '' },
+        { label: 'Run Active File' },
+        { label: 'Run Selected Text' },
+      ],
+    },
+    {
+      label: 'Help',
+      options: [
+        { label: 'Welcome' },
+        { label: 'Documentation' },
+        { label: 'Keyboard Shortcuts Reference' },
+        { label: 'Tips and Tricks' },
+        { divider: true, label: '' },
+        { label: 'Check for Updates' },
+        { label: 'About Astronia' },
+      ],
+    },
   ];
 
   useEffect(() => {
@@ -80,38 +143,47 @@ const MenuBar: React.FC = () => {
   }, []);
 
   return (
-    <nav ref={menuRef} className="flex items-center px-2 py-1 space-x-1 text-[var(--text-main)] text-sm border-b-custom bg-[#0F111A] relative z-50">
+    <nav ref={menuRef} className="flex items-center px-3 h-8 text-foreground/70 text-[12.5px] border-b border-border bg-background relative z-[100]">
       {menus.map((menu) => (
-        <div key={menu.label} className="relative">
+        <div key={menu.label} className="relative h-full flex items-center">
           <button 
             onClick={() => setActiveMenu(activeMenu === menu.label ? null : menu.label)}
             onMouseEnter={() => activeMenu && setActiveMenu(menu.label)}
-            className={`px-3 py-1 rounded cursor-pointer transition-colors ${activeMenu === menu.label ? 'bg-[var(--bg-selection)]' : 'hover:bg-[var(--bg-selection)]'}`}
+            className={`px-3 h-[85%] rounded flex items-center transition-colors ${activeMenu === menu.label ? 'bg-secondary text-foreground' : 'hover:bg-secondary/50 hover:text-foreground'}`}
           >
             {menu.label}
           </button>
           
-          {activeMenu === menu.label && (
-            <div className="absolute top-full left-0 mt-1 w-56 bg-[var(--bg-panel)] border border-[var(--border-color)] rounded shadow-xl py-1 animate-in fade-in zoom-in duration-100">
-              {menu.options.map((option, index) => (
-                option.divider ? (
-                  <div key={index} className="h-px bg-[var(--border-color)] my-1 mx-2" />
-                ) : (
-                  <button
-                    key={index}
-                    onClick={() => {
-                      option.action?.();
-                      setActiveMenu(null);
-                    }}
-                    className="w-full flex items-center justify-between px-3 py-1.5 text-xs hover:bg-[var(--accent-color)] hover:text-black transition-colors"
-                  >
-                    <span>{option.label}</span>
-                    {option.shortcut && <span className="opacity-50 ml-4">{option.shortcut}</span>}
-                  </button>
-                )
-              ))}
-            </div>
-          )}
+          <AnimatePresence>
+            {activeMenu === menu.label && (
+              <motion.div 
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                transition={{ duration: 0.1 }}
+                className="absolute top-[90%] left-0 w-64 bg-card border border-border rounded-md shadow-2xl py-1 mt-1 z-[101]"
+              >
+                {menu.options.map((option, index) => (
+                  option.divider ? (
+                    <div key={index} className="h-px bg-border my-1 mx-2" />
+                  ) : (
+                    <button
+                      key={index}
+                      disabled={option.disabled}
+                      onClick={() => {
+                        option.action?.();
+                        setActiveMenu(null);
+                      }}
+                      className={`w-full flex items-center justify-between px-3 py-1.5 text-[12px] transition-colors group ${option.disabled ? 'opacity-30 cursor-default' : 'hover:bg-primary hover:text-primary-foreground'}`}
+                    >
+                      <span className={`${!option.disabled && 'group-hover:font-medium'}`}>{option.label}</span>
+                      {option.shortcut && <span className="opacity-40 text-[10px] ml-4 font-mono">{option.shortcut}</span>}
+                    </button>
+                  )
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       ))}
     </nav>
